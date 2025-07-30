@@ -82,25 +82,41 @@ android {
             }
         }
     }
-
-    publishing {
-        // Configure publish variant
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
 }
 
 publishing {
-    // Configure publishing data
     publications {
-        register("release", MavenPublication::class.java) {
+        create<MavenPublication>("aar") {
             groupId = "com.github.bitfireat"
             artifactId = "synctools"
-            version = System.getenv("GIT_COMMIT")
+            version = "1.0"
 
-            afterEvaluate {
-                from(components["release"])
+            artifact("$buildDir/outputs//aar/${project.name}-release.aar")
+
+            pom {
+                name = "Sync tools for DAVx5"
+                description = "It is mainly used by DAVx⁵"
+
+                licenses {
+                    license {
+                        name = "GNU GENERAL PUBLIC LICENSE"
+                        url = "https://gitlab.e.foundation/e/os/synctools/-/raw/main/LICENSE"
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri("https://gitlab.e.foundation/api/v4/projects/1830/packages/maven")
+            name = "GitLab"
+            credentials(HttpHeaderCredentials::class) {
+                name = "Job-Token"
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+            authentication {
+                create("header", HttpHeaderAuthentication::class)
             }
         }
     }

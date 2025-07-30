@@ -1,0 +1,22 @@
+image: "registry.gitlab.e.foundation/e/os/docker-android-apps-cicd:latest"
+
+stages:
+  - publish
+
+before_script:
+  - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - chmod +x ./gradlew
+
+cache:
+  key: ${CI_PROJECT_ID}
+
+publish:
+  stage: publish
+  when: manual
+  script:
+    - ./gradlew :lib:assembleRelease
+    - ./gradlew :lib:publish
+  artifacts:
+    paths:
+      - lib/build/outputs/aar/
