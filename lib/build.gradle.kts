@@ -86,13 +86,11 @@ android {
 
 publishing {
     publications {
-        create<MavenPublication>("aar") {
-            groupId = "com.github.bitfireat"
+        create<MavenPublication>("maven") {
+            groupId = "foundation.e"
             artifactId = "synctools"
             version = "1.0"
-
-            artifact("$buildDir/outputs//aar/${project.name}-release.aar")
-
+            artifact("$buildDir/outputs/aar/lib-release.aar")
             pom {
                 name = "Sync tools for DAVx5"
                 description = "It is mainly used by DAVx⁵"
@@ -106,17 +104,13 @@ publishing {
             }
         }
     }
-
     repositories {
         maven {
             url = uri("https://gitlab.e.foundation/api/v4/projects/1830/packages/maven")
-            name = "GitLab"
-            credentials(HttpHeaderCredentials::class) {
-                name = "Job-Token"
-                value = System.getenv("CI_JOB_TOKEN")
-            }
-            authentication {
-                create("header", HttpHeaderAuthentication::class)
+            name = "Gitlab"
+            credentials {
+                username = "gitlab-ci-token"
+                password = System.getenv("CI_JOB_TOKEN")
             }
         }
     }
